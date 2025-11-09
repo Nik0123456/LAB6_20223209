@@ -1,0 +1,117 @@
+package com.example.l6_20223209.activities;
+
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.l6_20223209.R;
+import com.example.l6_20223209.services.FirebaseAuthService;
+import com.example.l6_20223209.services.FirestoreService;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
+public class QRCodeActivity extends AppCompatActivity {
+
+    private ImageView ivQRCode;
+    private MaterialToolbar toolbar;
+
+    private FirestoreService firestoreService;
+    private FirebaseAuthService authService;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_qrcode);
+
+        firestoreService = FirestoreService.getInstance();
+        authService = FirebaseAuthService.getInstance();
+
+        initializeViews();
+        generateQRCode();
+    }
+
+    private void initializeViews() {
+        toolbar = findViewById(R.id.toolbar);
+        ivQRCode = findViewById(R.id.ivQRCode);
+
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("Código QR - Revisión Técnica");
+        
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        toolbar.setNavigationOnClickListener(v -> finish());
+    }
+
+    private void generateQRCode() {
+        String licensePlate = getIntent().getStringExtra("license_plate");
+        String vehicleId = getIntent().getStringExtra("vehicle_id");
+        String reviewDate = getIntent().getStringExtra("review_date");
+
+        if (vehicleId == null || licensePlate == null) {
+            Toast.makeText(this, "Error: Datos del vehículo no disponibles", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        String userId = authService.getCurrentUser().getUid();
+
+        // Obtener el último kilometraje registrado
+        firestoreService.getLastMileageForVehicle(userId, vehicleId)
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    double lastMileage = 0;
+                    
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+                        lastMileage = doc.getDouble("mileage") != null ? doc.getDouble("mileage") : 0;
+                    }
+
+                    String qrContent = String.format(
+                            "Revisión Técnica Vehicular\n" +
+                            "Placa: %s\n" +
+                            "Último Kilometraje: %.0f km\n" +
+                            "Fecha Última Revisión: %s",
+                            licensePlate, lastMileage, reviewDate
+                    );
+
+                    try {
+                        Bitmap qrBitmap = generateQRCodeBitmap(qrContent, 800, 800);
+                        ivQRCode.setImageBitmap(qrBitmap);
+                    } catch (WriterException e) {
+                        Toast.makeText(this, "Error al generar código QR", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al obtener datos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private Bitmap generateQRCodeBitmap(String content, int width, int height) throws WriterException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, width, height);
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                bitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+            }
+        }
+        return bitmap;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+}

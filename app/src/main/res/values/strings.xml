@@ -1,0 +1,105 @@
+<resources>
+
+    <string name="app_name">Gestor de Combustible</string>
+
+    <string name="app_title">Gestor de Combustible</string>
+
+    <!-- Login -->
+
+    <string name="email">Correo electrónico</string>    
+
+    <string name="password">Contraseña</string>
+
+    <string name="login">Iniciar Sesión</string>
+
+    <string name="register">Registrarse</string>
+
+    <string name="or">O</string>
+
+    <string name="sign_in_google">Iniciar con Google</string>
+
+    <string name="no_account">¿No tienes cuenta? Regístrate</string>
+
+    <string name="have_account">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Navigation -->
+
+    <string name="vehicles">Mis Vehículos</string>    
+
+    <string name="records">Registros</string>    <!-- Navigation -->
+
+    <string name="summary">Resumen</string>
+
+    <string name="logout">Cerrar Sesión</string>
+
+    <!-- Vehicle Form -->
+
+    <string name="vehicle_id">ID del vehículo (Nickname)</string>    
+
+    <string name="license_plate">Placa del vehículo</string>    <!-- Vehicle Form -->
+
+    <string name="brand_model">Marca / Modelo</string>
+
+    <string name="year">Año de fabricación</string>
+
+    <string name="review_date">Fecha de revisión técnica</string>
+
+    <string name="add_vehicle">Agregar vehículo</string>
+
+    <!-- Fuel Record Form -->   
+
+    <string name="record_id">Código de registro</string>    
+
+    <string name="select_vehicle">Seleccionar vehículo</string>    <!-- Fuel Record Form -->
+
+    <string name="date">Fecha</string>
+
+    <string name="liters">Litros cargados</string>
+
+    <string name="mileage">Kilometraje actual</string>
+
+    <string name="price">Precio total (S/)</string>
+
+    <string name="fuel_type">Tipo de combustible</string>
+
+    <string name="add_record">Agregar registro</string>
+
+    <!-- Filters -->
+
+    <string name="start_date">Fecha inicio</string>    
+
+    <string name="end_date">Fecha fin</string>    <!-- Filters -->
+
+    <string name="filter">Filtrar</string>
+
+    <string name="clear_filter">Limpiar filtro</string>
+
+    <!-- Summary -->
+
+    <string name="total_liters">Litros Totales</string>    
+
+    <string name="total_spent">Gasto Total</string>    <!-- Summary -->
+
+    <string name="avg_mileage">Kilometraje Promedio</string>
+
+    <string name="liters_per_month">Litros Consumidos por Mes</string>
+
+    <string name="fuel_type_distribution">Distribución por Tipo de Combustible</string>
+
+    <!-- Actions -->
+
+    <string name="save">Guardar</string>    
+
+    <string name="edit">Editar</string>    <!-- Actions -->
+
+    <string name="delete">Eliminar</string>
+
+    <string name="generate_qr">Generar QR</string>
+
+    <string name="qr_code">Código QR</string>
+
+    <!-- Firebase -->
+
+    <string name="default_web_client_id">1:156312315523:android:ee366147a787e6d1385db6</string>    
+
+</resources>

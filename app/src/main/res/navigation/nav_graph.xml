@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_vehicles">
+
+    <fragment
+        android:id="@+id/navigation_vehicles"
+        android:name="com.example.l6_20223209.fragments.VehiclesFragment"
+        android:label="@string/vehicles" />
+
+    <fragment
+        android:id="@+id/navigation_records"
+        android:name="com.example.l6_20223209.fragments.RecordsFragment"
+        android:label="@string/records" />
+
+    <fragment
+        android:id="@+id/navigation_summary"
+        android:name="com.example.l6_20223209.fragments.SummaryFragment"
+        android:label="@string/summary" />
+
+</navigation>
