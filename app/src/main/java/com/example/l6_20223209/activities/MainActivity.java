@@ -12,12 +12,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.l6_20223209.R;
 import com.example.l6_20223209.services.FirebaseAuthService;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private NavController navController;
     private FirebaseAuthService authService;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        setupToolbar();
         setupNavigation();
+    }
+
+    private void setupToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     private void setupNavigation() {

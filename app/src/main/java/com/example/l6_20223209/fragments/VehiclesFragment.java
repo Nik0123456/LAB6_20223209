@@ -136,7 +136,10 @@ public class VehiclesFragment extends Fragment {
     private void generateQRCode(Vehicle vehicle) {
         Intent intent = new Intent(getActivity(), QRCodeActivity.class);
         intent.putExtra("license_plate", vehicle.getLicensePlate());
-        intent.putExtra("vehicle_id", vehicle.getId());
+        intent.putExtra("vehicle_doc_id", vehicle.getId());
+        intent.putExtra("vehicle_id_str", vehicle.getVehicleId());
+        intent.putExtra("brand_model", vehicle.getBrandModel());
+        intent.putExtra("year", String.valueOf(vehicle.getYear()));
         intent.putExtra("review_date", vehicle.getLastTechnicalReviewDate());
         startActivity(intent);
     }

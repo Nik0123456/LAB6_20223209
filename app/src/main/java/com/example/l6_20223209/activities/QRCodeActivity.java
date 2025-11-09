@@ -4,15 +4,17 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.l6_20223209.R;
+import com.example.l6_20223209.models.FuelRecord;
 import com.example.l6_20223209.services.FirebaseAuthService;
 import com.example.l6_20223209.services.FirestoreService;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -22,6 +24,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
     private ImageView ivQRCode;
     private MaterialToolbar toolbar;
+    private TextView tvVehicleId, tvLicensePlate, tvBrandModel, tvYear, tvTechnicalReview, tvLastMileage;
 
     private FirestoreService firestoreService;
     private FirebaseAuthService authService;
@@ -35,15 +38,20 @@ public class QRCodeActivity extends AppCompatActivity {
         authService = FirebaseAuthService.getInstance();
 
         initializeViews();
-        generateQRCode();
+        loadVehicleDetails();
     }
 
     private void initializeViews() {
         toolbar = findViewById(R.id.toolbar);
         ivQRCode = findViewById(R.id.ivQRCode);
+        tvVehicleId = findViewById(R.id.tvVehicleId);
+        tvLicensePlate = findViewById(R.id.tvLicensePlate);
+        tvBrandModel = findViewById(R.id.tvBrandModel);
+        tvYear = findViewById(R.id.tvYear);
+        tvTechnicalReview = findViewById(R.id.tvTechnicalReview);
+        tvLastMileage = findViewById(R.id.tvLastMileage);
 
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Código QR - Revisión Técnica");
         
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -52,28 +60,45 @@ public class QRCodeActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
     }
 
-    private void generateQRCode() {
+    private void loadVehicleDetails() {
         String licensePlate = getIntent().getStringExtra("license_plate");
-        String vehicleId = getIntent().getStringExtra("vehicle_id");
+        String vehicleIdStr = getIntent().getStringExtra("vehicle_id_str");
+        String brandModel = getIntent().getStringExtra("brand_model");
+        String year = getIntent().getStringExtra("year");
         String reviewDate = getIntent().getStringExtra("review_date");
+        String docId = getIntent().getStringExtra("vehicle_doc_id");
 
-        if (vehicleId == null || licensePlate == null) {
+        if (docId == null || licensePlate == null) {
             Toast.makeText(this, "Error: Datos del vehículo no disponibles", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        // Mostrar detalles del vehículo
+        tvVehicleId.setText("ID: " + vehicleIdStr);
+        tvLicensePlate.setText("Placa: " + licensePlate);
+        tvBrandModel.setText("Marca/Modelo: " + brandModel);
+        tvYear.setText("Año: " + year);
+        tvTechnicalReview.setText("Revisión Técnica: " + reviewDate);
+
         String userId = authService.getCurrentUser().getUid();
 
         // Obtener el último kilometraje registrado
-        firestoreService.getLastMileageForVehicle(userId, vehicleId)
+        firestoreService.getLastMileageForVehicle(userId, docId)
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     double lastMileage = 0;
                     
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
-                        lastMileage = doc.getDouble("mileage") != null ? doc.getDouble("mileage") : 0;
+                        // Encontrar el kilometraje máximo
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            FuelRecord record = doc.toObject(FuelRecord.class);
+                            if (record != null && record.getMileage() > lastMileage) {
+                                lastMileage = record.getMileage();
+                            }
+                        }
                     }
+
+                    tvLastMileage.setText(String.format("Último Kilometraje: %.0f km", lastMileage));
 
                     String qrContent = String.format(
                             "Revisión Técnica Vehicular\n" +
