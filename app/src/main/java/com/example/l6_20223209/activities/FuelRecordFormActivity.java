@@ -182,10 +182,18 @@ public class FuelRecordFormActivity extends AppCompatActivity {
             firestoreService.getLastMileageForVehicle(userId, vehicleId)
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
-                            FuelRecord lastRecord = queryDocumentSnapshots.getDocuments().get(0).toObject(FuelRecord.class);
-                            if (lastRecord != null && mileage <= lastRecord.getMileage()) {
+                            // Encontrar el registro con el kilometraje más alto
+                            double maxMileage = 0;
+                            for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                                FuelRecord record = doc.toObject(FuelRecord.class);
+                                if (record != null && record.getMileage() > maxMileage) {
+                                    maxMileage = record.getMileage();
+                                }
+                            }
+                            
+                            if (maxMileage > 0 && mileage <= maxMileage) {
                                 Toast.makeText(this, 
-                                        "El kilometraje debe ser mayor a " + lastRecord.getMileage(), 
+                                        "El kilometraje debe ser mayor a " + maxMileage, 
                                         Toast.LENGTH_LONG).show();
                                 return;
                             }

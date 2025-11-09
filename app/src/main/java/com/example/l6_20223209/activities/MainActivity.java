@@ -6,8 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.l6_20223209.R;
@@ -38,12 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private void setupNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         
-        // Obtener el NavHostFragment correctamente
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+        // Obtener el NavHostFragment del FragmentContainerView
+        Fragment navHostFragment = getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         
         if (navHostFragment != null) {
-            navController = navHostFragment.getNavController();
+            navController = androidx.navigation.fragment.NavHostFragment
+                    .findNavController(navHostFragment);
             NavigationUI.setupWithNavController(bottomNav, navController);
         }
     }

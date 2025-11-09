@@ -144,6 +144,8 @@ public class RecordsFragment extends Fragment {
                     record.setId(doc.getId());
                     recordList.add(record);
                 }
+                // Ordenar por fecha descendente en memoria
+                recordList.sort((r1, r2) -> r2.getDate().compareTo(r1.getDate()));
             }
             adapter.notifyDataSetChanged();
         });
@@ -189,6 +191,8 @@ public class RecordsFragment extends Fragment {
                 record.setId(doc.getId());
                 recordList.add(record);
             }
+            // Ordenar por fecha descendente en memoria
+            recordList.sort((r1, r2) -> r2.getDate().compareTo(r1.getDate()));
         }
         adapter.notifyDataSetChanged();
     }

@@ -48,8 +48,7 @@ public class FirestoreService {
 
     public Query getVehiclesByUserId(String userId) {
         return db.collection(VEHICLES_COLLECTION)
-                .whereEqualTo("userId", userId)
-                .orderBy("vehicleId", Query.Direction.ASCENDING);
+                .whereEqualTo("userId", userId);
     }
 
     public Task<QuerySnapshot> getVehiclesByUserIdTask(String userId) {
@@ -74,31 +73,26 @@ public class FirestoreService {
 
     public Query getFuelRecordsByUserId(String userId) {
         return db.collection(FUEL_RECORDS_COLLECTION)
-                .whereEqualTo("userId", userId)
-                .orderBy("date", Query.Direction.DESCENDING);
+                .whereEqualTo("userId", userId);
     }
 
     public Query getFuelRecordsByVehicle(String userId, String vehicleId) {
         return db.collection(FUEL_RECORDS_COLLECTION)
                 .whereEqualTo("userId", userId)
-                .whereEqualTo("vehicleId", vehicleId)
-                .orderBy("date", Query.Direction.DESCENDING);
+                .whereEqualTo("vehicleId", vehicleId);
     }
 
     public Query getFuelRecordsByDateRange(String userId, String startDate, String endDate) {
         return db.collection(FUEL_RECORDS_COLLECTION)
                 .whereEqualTo("userId", userId)
                 .whereGreaterThanOrEqualTo("date", startDate)
-                .whereLessThanOrEqualTo("date", endDate)
-                .orderBy("date", Query.Direction.DESCENDING);
+                .whereLessThanOrEqualTo("date", endDate);
     }
 
     public Task<QuerySnapshot> getLastMileageForVehicle(String userId, String vehicleId) {
         return db.collection(FUEL_RECORDS_COLLECTION)
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("vehicleId", vehicleId)
-                .orderBy("mileage", Query.Direction.DESCENDING)
-                .limit(1)
                 .get();
     }
 
